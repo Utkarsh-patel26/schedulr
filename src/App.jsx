@@ -51,7 +51,7 @@ function App() {
         </div>
 
         <div>
-          <label>Cron Expression (e.g., */5 * * * *):</label>
+          <label>Cron Expression:</label>
           <input type="text" name="cron" value={formData.cron} onChange={handleChange} required />
         </div>
 
@@ -71,7 +71,7 @@ function App() {
         </div>
 
         <button type="submit" style={{ padding: '10px', marginTop: '10px', cursor: 'pointer' }}>
-          Save Task to MongoDB
+          Save Task
         </button>
       </form>
     </div>

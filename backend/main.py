@@ -8,6 +8,7 @@ import redis.asyncio as redis
 from croniter import croniter
 import os
 from dotenv import load_dotenv
+from worker import celery_app
 
 
 load_dotenv()
@@ -21,7 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 MONGO_DETAILS = os.getenv("MONGO_DETAILS")
 REDIS_URL = os.getenv("REDIS_URL")
@@ -51,20 +51,14 @@ async def check_and_queue_tasks():
     while True:
         now = datetime.now() 
         print(f"[{now.strftime('%H:%M:%S')}] Checking tasks...")
-
         query = {
             "startDate": {"$lte": now},
             "endDate": {"$gte": now},
             "nextRun": {"$lte": now}
         }
-
         async for task in task_collection.find(query):
             print(f" Sending to Redis: {task['name']}")
-
-           
-            await redis_client.lpush("celery_task_queue", task["name"])
-
-            
+            celery_app.send_task("print_task_name", args=[task["name"]])
             cron = croniter(task["cron"], now)
             next_run = cron.get_next(datetime)
 
