@@ -28,6 +28,12 @@ function App() {
     console.log("Data ready to send to FastAPI:", formData);
 
     try {
+      const response = await fetch('http://localhost:8000/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
       alert("Task submitted successfully! Check console for payload.");
     } catch (error) {
       console.error("Error submitting form:", error);
